@@ -1,0 +1,56 @@
+@using BlazorLazyLoading.Client.Infrastructure
+@using BlazorLazyLoading.Client.Services
+@using System.Reflection
+@inject AssemblyService AssemblyService
+
+<CascadingValue Value="@AppState">
+    <Router AppAssembly="@typeof(Program).Assembly" 
+            AdditionalAssemblies="@_lazyLoadedAssemblies" OnNavigateAsync="@OnNavigateAsync">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingValue>
+
+@code
+{
+    private AppState AppState { get; set; } = new AppState();
+
+    private readonly List<Assembly> _lazyLoadedAssemblies = new List<Assembly>();
+
+    protected override Task OnParametersSetAsync()
+    {
+        if (_lazyLoadedAssemblies.Any(x => x.GetName().Name == "BlazorLazyLoading.Modules.StaticLinkedPages") == false)
+        {
+            _lazyLoadedAssemblies.Add(typeof(StaticLinkPage).Assembly);
+        }
+
+        return base.OnParametersSetAsync();
+    }
+
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        try
+        {
+            if (args.Path.EndsWith("LazyLoaded"))
+            {
+                var assembly = await AssemblyService.LoadAssembly("BlazorLazyLoading.Modules.LazyLoadedPages");
+                _lazyLoadedAssemblies.Add(assembly);
+            }
+        }
+        catch (Exception ex)
+        {
+            //TODO
+        }
+    }
+    private void ChangeState(AppState appState)
+    {
+        AppState = appState;
+        StateHasChanged();
+    }
+}
