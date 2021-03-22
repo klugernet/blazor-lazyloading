@@ -4,7 +4,7 @@
 @inject AssemblyService AssemblyService
 
 <CascadingValue Value="@AppState">
-    <Router AppAssembly="@typeof(Program).Assembly" 
+    <Router AppAssembly="@typeof(Program).Assembly"
             AdditionalAssemblies="@_lazyLoadedAssemblies" OnNavigateAsync="@OnNavigateAsync">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -39,8 +39,12 @@
         {
             if (args.Path.EndsWith("LazyLoaded"))
             {
-                var assembly = await AssemblyService.LoadAssembly("BlazorLazyLoading.Modules.LazyLoadedPages");
-                _lazyLoadedAssemblies.Add(assembly);
+                var assemblyName = "BlazorLazyLoading.Modules.LazyLoadedPages";
+                if (_lazyLoadedAssemblies.Any(x => x.GetName().Name == assemblyName) == false)
+                {
+                    var assembly = await AssemblyService.LoadAssembly(assemblyName);
+                    _lazyLoadedAssemblies.Add(assembly);
+                }
             }
         }
         catch (Exception ex)
