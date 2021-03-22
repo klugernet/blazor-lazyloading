@@ -1,0 +1,24 @@
+@using BlazorLazyLoading.Client.Infrastructure
+<CascadingValue Value="@AppState">
+    <LazyRouter>
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </LazyRouter>
+</CascadingValue>
+
+@code
+{
+    private AppState AppState { get; set; } = new AppState();
+
+    private void ChangeState(AppState appState)
+    {
+        AppState = appState;
+        StateHasChanged();
+    }
+}
