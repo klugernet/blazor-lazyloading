@@ -1,7 +1,26 @@
 ﻿@page "/LazyLoaded"
+@using Microsoft.Extensions.Logging
+@using System.Net.Http
+@inject HttpClient Client
+@inject ILogger<LazyLoadedPage> Logger
 
 <h1>lazy loaded page</h1>
 
 <p>This page is contained in an assembly that is lazy loaded on first access</p>
 
 <DependencyComponent />
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        Logger.LogInformation("LazyLoaded Page - OnInitialized");
+        base.OnInitialized();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        Logger.LogInformation("LazyLoaded Page - OnParametersSetAsync");
+        return base.OnParametersSetAsync();
+    }
+}
