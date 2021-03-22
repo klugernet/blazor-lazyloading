@@ -22,15 +22,16 @@ namespace BlazorLazyLoading.Server.Controllers
             },
             new RouteDefinition()
             {
-                Path="/StaticLink",
+                Path="StaticLink",
                 TypeFullName = "BlazorLazyLoading.Modules.StaticLinkedPages.StaticLinkPage",
                 LazyLoad = false
             },
             new RouteDefinition()
             {
-                Path = "/LazyLoaded",
+                Path = "LazyLoaded",
                 TypeFullName = "BlazorLazyLoading.Modules.LazyLoadedPages.LazyLoadedPage",
-                LazyLoad = true
+                LazyLoad = true,
+                AssemblyName = "BlazorLazyLoading.Modules.LazyLoadedPages"
             }
         };
 
